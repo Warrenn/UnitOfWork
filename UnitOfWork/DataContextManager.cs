@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -55,6 +54,7 @@ namespace UnitOfWork
 
         protected virtual void CloseDataContext()
         {
+            CurrentContext?.Dispose();
             ContextStack.Pop();
         }
     }
