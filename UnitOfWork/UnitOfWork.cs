@@ -3,29 +3,43 @@ using System.Threading.Tasks;
 
 namespace UnitOfWork
 {
-    public partial class UnitOfWorkManager
+    public class UnitOfWork<TContext> : IUnitOfWork where TContext: IDisposable
     {
-        public class UnitOfWork : IUnitOfWork
+        private readonly Action close;
+        private readonly Func<TContext> getContext;
+
+        public UnitOfWork(Action close, Func<TContext> getContext)
         {
-            private readonly Action popOffStack;
-            private readonly Func<Task> saveAsync;
+            this.close = close;
+            this.getContext = getContext;
+        }
 
-            public UnitOfWork(Action popOffStack, Func<Task> saveAsync)
+        public virtual void Dispose()
+        {
+            close();
+        }
+
+        private ISaveChanges GetContextWithGuard()
+        {
+            var context = (getContext() as ISaveChanges);
+            if (context == null)
             {
-                this.popOffStack = popOffStack;
-                this.saveAsync = saveAsync;
+                throw new Exception("Context needs to implement ISaveChanges");
             }
 
+            return context;
+        }
 
-            public void Dispose()
-            {
-                popOffStack();
-            }
+        public virtual void SaveChanges()
+        {
+            ISaveChanges context = GetContextWithGuard();
+            context.SaveChanges();
+        }
 
-            public async Task SaveChangesAsync()
-            {
-                await saveAsync();
-            }
+        public virtual async Task SaveChangesAsync()
+        {
+            ISaveChanges context = GetContextWithGuard();
+            await context.SaveChangesAsync();
         }
     }
 }

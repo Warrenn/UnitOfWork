@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using UnitOfWork;
+using System.Threading.Tasks;
 
 namespace Example
 {
-    public class ExampleDbContext : DbContext
+    public class ExampleDbContext : DbContext, ISaveChanges
     {
         public ExampleDbContext(DbContextOptions options) : base(options)
         {
@@ -13,5 +12,15 @@ namespace Example
         }
 
         public DbSet<UserEntity> Users { get; set; }
+
+        public async Task SaveChangesAsync()
+        {
+            await base.SaveChangesAsync();
+        }
+
+        void ISaveChanges.SaveChanges()
+        {
+            base.SaveChanges();
+        }
     }
 }

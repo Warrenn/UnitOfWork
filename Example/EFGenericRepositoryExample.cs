@@ -10,9 +10,9 @@ namespace Example
 {
     class EFGenericRepositoryExample<T> : IGenericRepository<T> where T : class
     {
-        private readonly IUnitOfWorkManager manager;
+        private readonly IDataContextManager<ExampleDbContext> manager;
 
-        public EFGenericRepositoryExample(IUnitOfWorkManager manager)
+        public EFGenericRepositoryExample(IDataContextManager<ExampleDbContext> manager)
         {
             this.manager = manager;
         }
@@ -21,14 +21,14 @@ namespace Example
         {
             get
             {
-                var dbContext = manager.CurrentContext as DbContext;
+                var dbContext = manager.CurrentContext;
                 return dbContext.Set<T>();
             }
         }
 
         public void AddOrUpdate(T data)
         {
-            var context = manager.CurrentContext as DbContext;
+            var context = manager.CurrentContext;
             var dbSet = context.Set<T>();
             var ids = context.Model
                 .FindEntityType(typeof(T))

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace UnitOfWork
 {
-    public interface IUnitOfWork : IDisposable
+    public interface ISaveChanges
     {
         void SaveChanges();
         Task SaveChangesAsync();

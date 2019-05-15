@@ -6,10 +6,10 @@ namespace Example
 {
     public class ExampleController
     {
-        private readonly IUnitOfWorkManager manager;
+        private readonly IDataContextManager<ExampleDbContext> manager;
         private readonly IGenericRepository<UserEntity> repository;
 
-        public ExampleController(IUnitOfWorkManager manager, IGenericRepository<UserEntity> repository)
+        public ExampleController(IDataContextManager<ExampleDbContext> manager, IGenericRepository<UserEntity> repository)
         {
             this.manager = manager;
             this.repository = repository;
